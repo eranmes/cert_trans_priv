@@ -35,7 +35,7 @@
 
 %don't want date printed
 \date{}
-
+ 
 %make title bold and 14 pt font (Latex default is non-bold, 16 pt)
 \title{\Large \bf Certificate Transparency With Better Privacy Guarantees}
 
@@ -107,7 +107,7 @@ A function family $F_{(\cdot)}$ is a family of VRFs (or just a VRF) if there exi
 \begin{enumerate}
 \item Run $Gen(\lambda)=(pk,sk)$.
 \item Run $A_E^{Eval_{sk}(\cdot)}(pk)$ to obtain the tuple $(x, state)$.
-\item Let $y_0=F_{sk}(x)$ and let $y_1=\{0,1\}^n$ where $n$ is the output length of $F$.
+\item Let $y_0=F_{sk}(x)$ and let $y_1\in_R\{0,1\}^n$ where $n$ is the output length of $F$.
 \item Run $A_J^{Eval_{sk}(\cdot)}(y_b, state)$ to obtain $b'$.
 \item Output $b'$.
 \end{enumerate}
@@ -286,6 +286,10 @@ Since it is likely that any SCT excluded from the log but publicly available on 
 
 We need only to make a slight modification to our zero knowledge protocol in order to achieve this weakened notion of witness indistinguishability. We set the randomness $r$ used in the pedersen commitment to the  hash $x$ of the missing SCT to zero. This gives us a weakened commitment of the form $c=g^x$, which is still hiding because of the high entropy of $x$, the hash output. The rest of the proof proceeds as before. Now the verifier can distribute $c,g$, and any browser can check if an SCT it has acquired matches the one used to construct the proof. 
 
+\subsection{Practical Considerations}
+
+To be written by Eran
+
 \subsection{Performance Estimates}
 \begin{center}
 \begin{figure*}
@@ -321,7 +325,7 @@ We implemented a prototype of our protocol in parts using ZKPDL \cite{ZKPDL} for
 
 A drawback of CT as currently formulated is that every SCT and log entry reveals the name of the domain for which the associated certificate is issued. This creates a problem for companies who wish to have certificates issued for internal domains without revealing the existence of the internal domains to monitors and auditors of the log. A great deal of discussion has taken place around this issue (\cite{redaction-disc}), the main proposed solutions to which are redaction of names via wildcards (\cite{RFC-bis}) or including a hash of domain names instead of the names themselves. The former solution does not fix the subdomain specified by a wildcard, meaning that it does not offer optimal precision or privacy, and the latter is vulnerable to a dictionary attack where an adversary could guess possible domain names until a correct one is found. This attack should be easy to carry out because domain names are typically very low-entropy and can be guessed. We set out to modify the CT scheme so as to allow for companies with internal domains to take advantage of its benefits without revealing any private information. We believe our solution strikes an ideal balance between transparency and privacy without requiring any major or impractical changes to the functioning of a CT log.
 
-Our solution uses Verifiable Random Functions to allow privileged internal users access to CT log information regarding company-issued certificates without revealing anything to the public. The main insight of this section is that VRFs are a perfect fit for the needs of a secure redaction scheme in CT. In the variation of CT described below, instead of the name of the domain, a token derived from the name is publicly listed\footnote{It is also possible to replace only part of the domain name instead of the whole name if desired.}. The domain owner has a proof it can give to site visitors that allows anyone with a copy to both find log entries associated with the domain and to verify that certificates issued for that domain are indeed linked to a given SCT. Our construction requires only a Verifiable Random Function \cite{MRV99} which can be constructed in the random oracle model from a collision-resistant hash function and a unique signature scheme, as observed by \cite{MBB+15}. RSA \cite{RSA78} and BLS \cite{BLS01} signatures are both unique, so either can be used to implement our changes. \cite{MBB+15} also presents a different, discrete-log based VRF that is equally applicable here. 
+Our solution uses Verifiable Random Functions to allow privileged internal users access to CT log information regarding company-issued certificates without revealing anything to the public. The main insight of this section is that VRFs are a perfect fit for the needs of a secure redaction scheme in CT. In the variation of CT described below, instead of the name of the domain, a token derived from the name is publicly listed\footnote{It is also possible to replace only part of the domain name instead of the whole name if desired.}. The domain owner has a proof it can give to site visitors that allows anyone with a copy to both find log entries associated with the domain and to verify that certificates issued for that domain are indeed linked to a given SCT. Our construction requires only a Verifiable Random Function \cite{MRV99} which can be constructed in the random oracle model from a collision-resistant hash function and a unique signature scheme, as observed by \cite{MBB+15}. RSA \cite{RSA78} and BLS \cite{BLS01} signatures are both unique, so either can be used to implement our changes. \cite{MBB+15} also presents a different, discrete-log based VRF that is equally applicable here and whose security follows from the DDH assumption. The VRF they use has $F_k(x)=H(x)^k$ and proves that the value was computed correctly with a Chaum-Pedersen proof of equality for two discrete logarithms.
 
 \subsection{Construction}
 The construction is simple. The domain owner $D$ will use a VRF $\nu$ to generate secret and public keys $sk_\nu$, $pk_\nu$ respectively. Each CA additionally has its own signing key pair $sk_C, pk_C$. When $D$ requests a certificate for domain $d$ from a CA, $D$ selects a salt\footnote{The salt could be omitted from the scheme but is useful in the case that the key $sk_\nu$ is stolen. In this case, the holder of $sk_nu$ can mount a dictionary attack against each token $t$ on the log. Including a salt means that a separate attack must be made for each entry instead of making one for all entries from $D$.} $s$ computes $(t, \pi)=Eval_{sk_\nu}(d||s)$ and sends to the CA the token $t$, $s$, $pk_\nu$, and $d$. The CA then sends the log $t$, a signature $\sigma=(pk_\nu, Sign_{sk_C}(pk_\nu))$, $s$, and $D$. The log creates an SCT that includes $t$, $\sigma$, $s$, $D$ and returns it to the CA who gives the SCT to the domain owner along with the certificate. The log includes, $t$, $\sigma$, $s$, and $D$ in the corresponding log entry. $D$ distributes $d$, $\pi$ to any site visitor, auditor or monitor it desires. This could mean either posting $\pi$ publicly or only distributing it among employees who need access.
@@ -420,7 +424,7 @@ Our VRF implementation is available at \url{https://github.com/SabaEskandarian/s
 \bibitem{RFC-bis} RFC 6962-bis, https://tools.ietf.org/html/draft-ietf-trans-rfc6962-bis-20.
 \bibitem{MBB+15} M. Melara, A. Blankstein, J. Bonneau, E. Felten M. Freedman. CONIKS: Bringing Key Transparency to End Users, \emph{USENIX}, 2015.
 \bibitem{MRV99} S. Micali, M. Rabin, S. Vadhan. Verifiable Random Functions, \emph{FOCS}, 1999.
-\bibitem{RSA78} R. L. Rivest, A. Shamir, and L. Adleman. A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2):120–126, 1978.
+\bibitem{RSA78} R. L. Rivest, A. Shamir, and L. Adleman. A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2):120Ã¢ÂÂ126, 1978.
 \bibitem{BLS01} D. Boneh, B. Lynn, and H. Shacham. Short signatures from the weil pairing. ASIACRYPT, 2001.
 \bibitem{DY05} Y. Dodis, A. Yampolskiy. A Verifiable Random Function With Short Proofs and Key, \emph{PKC}, 2005.
 
@@ -462,3 +466,4 @@ Range Proofs, \emph{Asiacrypt}, 2008.
 
 
 
+Diophantine
