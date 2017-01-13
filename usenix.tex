@@ -288,7 +288,14 @@ We need only to make a slight modification to our zero knowledge protocol in ord
 
 \subsection{Practical Considerations}
 
-To be written by Eran
+The presented solution can be implemented on top of the existing Certificate Transparency specification, RFC6962, with some adjustments.
+
+\textbf{Key Distribution}: The existing mechanisms for distributing the log's key for signing SCTs can be used for distributing the three additional keys. TODO(eranm): Refer to the keys in the same way as above.
+
+\textbf{Obtaining Entries around timestamp}: The current CT RFC only specifies an API for getting the index of an entry in the log given its hash, requiring the client to know the timestamp and the certificate for that entry. A new API endpoint can be added to return a number of log entries around a timestamp specified by the client.
+TODO(eranm): More accurate specification of the inputs and outputs of the needed API, including the keys.
+
+\textbf{Adding signatures to SCTs}: Signed Certificate Timestamps have an extensions field which can be used for embedding the signatures $\sigma_{T_y+H(y)},$ $\sigma_{H(y)}, $. As the signature in the Signed Certificate Timestamp covers the extensions field, these signatures should be produced before the signature over the entire Signed Certificate Timestamp TODO(eranm): Notation for the signature over the entire SCT.
 
 \subsection{Performance Estimates}
 \begin{center}
