@@ -123,7 +123,7 @@ Turning our attention to the tools needed for our proof of log exclusion, we not
 \begin{definition}[$\delta$-near collision resistant hash function]
 A hash function $H: \{0,1\}^*\rightarrow \{0,1\}^n$ is $\delta$-near collision resistant if it is hard to find $x,y\in\{0,1\}^*$ such that $|H(x)-H(y)|<\delta$, where $H(x), H(y)$ are interpreted as integers.
 \end{definition}
-Although a stronger assumption than collision-resistance, it would appear that most hash functions conjectured to be collision-resistant also satisfy $poly(n)$-near collision resistance. It is also clear that any random function has $poly(n)$-collision resistance since the probability that two random points in $\{0,1\}^n$ fall within $poly(n)$ of each other is $\frac{poly(n)}{2^n}$.
+Although a stronger assumption than collision-resistance, it would appear that most hash functions conjectured to be collision-resistant also satisfy $poly(n)$-near collision resistance, where $poly(n)$ represents some polynomial function of $n$. It is also clear that any random function has $poly(n)$-collision resistance since the probability that two random points in $\{0,1\}^n$ fall within $poly(n)$ of each other is $\frac{poly(n)}{2^n}$.
 
 \subsection{Security Model}
 In order to develop our zero-knowledge proof of log exclusion, we will need to make some minor additions to the information kept by a CT log. These changes are described in more detail in section 3. Below we give a formalization of the definition of a CT log that has been modified to include our additional requirements. 
@@ -431,7 +431,7 @@ Our VRF implementation is available at \url{https://github.com/SabaEskandarian/s
 \bibitem{RFC-bis} RFC 6962-bis, https://tools.ietf.org/html/draft-ietf-trans-rfc6962-bis-20.
 \bibitem{MBB+15} M. Melara, A. Blankstein, J. Bonneau, E. Felten M. Freedman. CONIKS: Bringing Key Transparency to End Users, \emph{USENIX}, 2015.
 \bibitem{MRV99} S. Micali, M. Rabin, S. Vadhan. Verifiable Random Functions, \emph{FOCS}, 1999.
-\bibitem{RSA78} R. L. Rivest, A. Shamir, and L. Adleman. A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2):120Ã¢ÂÂ126, 1978.
+\bibitem{RSA78} R. L. Rivest, A. Shamir, and L. Adleman. A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2):120ÃÂ¢ÃÂÃÂ126, 1978.
 \bibitem{BLS01} D. Boneh, B. Lynn, and H. Shacham. Short signatures from the weil pairing. ASIACRYPT, 2001.
 \bibitem{DY05} Y. Dodis, A. Yampolskiy. A Verifiable Random Function With Short Proofs and Key, \emph{PKC}, 2005.
 
@@ -474,3 +474,4 @@ Range Proofs, \emph{Asiacrypt}, 2008.
 
 
 Diophantine
+
