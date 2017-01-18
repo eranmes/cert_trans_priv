@@ -130,13 +130,13 @@ In order to develop our zero-knowledge proof of log exclusion, we will need to m
 \begin{definition}[CT Log]
 A CT log is an entity that maintains append-only lists Log, hashLog, ILog, and TLog as well as 4 signing keys $k_H, k_T, k_I, k_S$ and a counter $i$. A CT log's lists are initially empty, and the counter is initially set to 0. It also has access to $poly(\lambda)$-near collision resistant hash function $H$, a signature scheme $\sigma=(KeyGen, Sig, Vrfy)$ , and another signature scheme $\sigma_k = (KeyGen, Sig, Vrfy)$ with efficient proof of knowledge properties. Upon receiving a message $m, t$ from party $P$, a log takes the following actions\footnote{Although in reality it is the log who assigns $t$ and not $P$, defining the security model such that $P$ selects $t$ makes the adversary strictly more powerful in our setting.}:
 \begin{itemize}
+\item send $P$ $(H(s), Sig_{k_H}(H(s)))$
+\item send $P$ $(t+H(s), Sig_{k_T}(t+H(s)))$
+\item send $P$ the SCT $s=(m, t)$ and $Sig_{k_S}(s)$
 \item append $e = (m, i, t)$ to Log
 \item append $(H(e), Sig_{k_H}(H(e)))$ to hashLog
 \item append $(i+H(e), Sig_{k_I}(i+H(e)))$ to ILog
 \item append $(t+H(e), Sig_{k_T}(t+H(e)))$ to TLog
-\item send $P$ $(H(s), Sig_{k_H}(H(s)))$
-\item send $P$ $(t+H(s), Sig_{k_T}(t+H(s)))$
-\item send $P$ the SCT $s=(m, t)$ and $Sig_{k_S}(s)$
 \item increment $i$ by one
 \end{itemize}
 
@@ -433,7 +433,7 @@ Our VRF implementation is available at \url{https://github.com/SabaEskandarian/s
 \bibitem{RFC-bis} RFC 6962-bis, https://tools.ietf.org/html/draft-ietf-trans-rfc6962-bis-20.
 \bibitem{MBB+15} M. Melara, A. Blankstein, J. Bonneau, E. Felten M. Freedman. CONIKS: Bringing Key Transparency to End Users, \emph{USENIX}, 2015.
 \bibitem{MRV99} S. Micali, M. Rabin, S. Vadhan. Verifiable Random Functions, \emph{FOCS}, 1999.
-\bibitem{RSA78} R. L. Rivest, A. Shamir, and L. Adleman. A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2):120ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ126, 1978.
+\bibitem{RSA78} R. L. Rivest, A. Shamir, and L. Adleman. A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2):120ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ126, 1978.
 \bibitem{BLS01} D. Boneh, B. Lynn, and H. Shacham. Short signatures from the weil pairing. ASIACRYPT, 2001.
 \bibitem{DY05} Y. Dodis, A. Yampolskiy. A Verifiable Random Function With Short Proofs and Key, \emph{PKC}, 2005.
 
