@@ -297,6 +297,8 @@ TODO(eranm): More accurate specification of the inputs and outputs of the needed
 
 \textbf{Adding signatures to SCTs}: Signed Certificate Timestamps have an extensions field which can be used for embedding the signatures $\sigma_{T_y+H(y)},$ $\sigma_{H(y)}, $. As the signature in the Signed Certificate Timestamp covers the extensions field, these signatures should be produced before the signature over the entire Signed Certificate Timestamp TODO(eranm): Notation for the signature over the entire SCT.
 
+Timestamps are required to be unique under this construction. Distributed implementation of a log could issue two SCTs with exactly the same timestamp for two different entries submitted at the same time. To avoid the restricting the implementation, each front-end of the log will be assigned a unique ID, which will be concatenated to the timestamp to ensure uniqueness. In practice, the unique ID should be added as an extension to the SCT to avoid changing the timestamp format currently specified in the CT RFC.
+
 \subsection{Performance Estimates}
 \begin{center}
 \begin{figure*}
