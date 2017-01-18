@@ -297,10 +297,11 @@ The presented solution can be implemented on top of the existing Certificate Tra
   \item[timestamp] The desired timestamp, in decimal.
   \item[count] The desired number of entries.
 \end{description}
-And the following outputs:
+And the following output, for each entry:
 \begin{description}
+  \item[index] Index of the entry.
   \item[sct] JSON structure containing the SCT, as described in Section 4.1. of RFC6962.
-  \item[signatures] JSON structure containing TODO(eranm): Specify.
+  \item[signatures] JSON structure containing $(H(s), Sig_{k_H}(H(s)))$ and $(t+H(s), Sig_{k_T}(t+H(s)))$
 \end{description}
 
 \textbf{Adding signatures to SCTs}: Signed Certificate Timestamps have an extensions field which can be used for embedding the signatures $\sigma_{T_y+H(y)},$ $\sigma_{H(y)}, $. As the signature in the Signed Certificate Timestamp covers the extensions field, these signatures should be produced before the signature over the entire Signed Certificate Timestamp, $Sig_{k_S}(s)$.
