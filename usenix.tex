@@ -290,14 +290,23 @@ We need only to make a slight modification to our zero knowledge protocol in ord
 
 The presented solution can be implemented on top of the existing Certificate Transparency specification, RFC6962, with some adjustments.
 
-\textbf{Key Distribution}: The existing mechanisms for distributing the log's key for signing SCTs can be used for distributing the three additional keys. TODO(eranm): Refer to the keys in the same way as above.
+\textbf{Key Distribution}: The existing mechanism for distributing the log's key for verifying SCTs signed using $k_S$, can be used for distributing the additional keys for verifying signatures produced using $k_H, k_T, k_I$.
 
-\textbf{Obtaining Entries around timestamp}: The current CT RFC only specifies an API for getting the index of an entry in the log given its hash, requiring the client to know the timestamp and the certificate for that entry. A new API endpoint can be added to return a number of log entries around a timestamp specified by the client.
-TODO(eranm): More accurate specification of the inputs and outputs of the needed API, including the keys.
+\textbf{Obtaining Entries around timestamp}: The current CT RFC only specifies an API for getting the index of an entry in the log given its hash, requiring the client to know the timestamp and the certificate for that entry. A new API endpoint is needed to provide a number of log entries around a timestamp specified by the client:\texttt{/ct/v1/get-entries-around-timestamp} with the following inputs:
+\begin{description}
+  \item[timestamp] The desired timestamp, in decimal.
+  \item[count] The desired number of entries.
+\end{description}
+And the following output, for each entry:
+\begin{description}
+  \item[index] Index of the entry.
+  \item[sct] JSON structure containing the SCT, as described in Section 4.1. of RFC6962.
+  \item[signatures] JSON structure containing $(H(s), Sig_{k_H}(H(s)))$ and $(t+H(s), Sig_{k_T}(t+H(s)))$
+\end{description}
 
-\textbf{Adding signatures to SCTs}: Signed Certificate Timestamps have an extensions field which can be used for embedding the signatures $\sigma_{T_y+H(y)},$ $\sigma_{H(y)}, $. As the signature in the Signed Certificate Timestamp covers the extensions field, these signatures should be produced before the signature over the entire Signed Certificate Timestamp TODO(eranm): Notation for the signature over the entire SCT.
+\textbf{Adding signatures to SCTs}: Signed Certificate Timestamps have an extensions field which can be used for embedding the signatures $\sigma_{T_y+H(y)},$ $\sigma_{H(y)}, $. As the signature in the Signed Certificate Timestamp covers the extensions field, these signatures should be produced before the signature over the entire Signed Certificate Timestamp, $Sig_{k_S}(s)$.
 
-Timestamps are required to be unique under this construction. Distributed implementation of a log could issue two SCTs with exactly the same timestamp for two different entries submitted at the same time. To avoid the restricting the implementation, each front-end of the log will be assigned a unique ID, which will be concatenated to the timestamp to ensure uniqueness. In practice, the unique ID should be added as an extension to the SCT to avoid changing the timestamp format currently specified in the CT RFC.
+\textbf{Uniqueness of timestamps}: Timestamps are required to be unique under this construction. Distributed implementation of a log could issue two SCTs with exactly the same timestamp for two different entries submitted at the same time. To avoid the restricting the implementation, each front-end of the log will be assigned a unique ID, which will be concatenated to the timestamp to ensure uniqueness. In practice, the unique ID should be added as an extension to the SCT to avoid changing the timestamp format currently specified in the CT RFC.
 
 \subsection{Performance Estimates}
 \begin{center}
