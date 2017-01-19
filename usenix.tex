@@ -301,7 +301,7 @@ And the following output, for each entry:
 \begin{description}
   \item[index] Index of the entry.
   \item[sct] JSON structure containing the SCT, as described in Section 4.1. of RFC6962.
-  \item[signatures] JSON structure containing $(H(s), Sig_{k_H}(H(s)))$ and $(t+H(s), Sig_{k_T}(t+H(s)))$
+  \item[signatures] JSON structure containing $Sig_{k_H}(H(e)), Sig_{k_I}(i+H(e))$ and $Sig_{k_T}(t+H(e))$ ($H(e), i+H(e)$ and $t+H(e)$ can be calculated by the client).
 \end{description}
 
 \textbf{Adding signatures to SCTs}: Signed Certificate Timestamps have an extensions field which can be used for embedding the signatures $\sigma_{T_y+H(y)},$ $\sigma_{H(y)}, $. As the signature in the Signed Certificate Timestamp covers the extensions field, these signatures should be produced before the signature over the entire Signed Certificate Timestamp, $Sig_{k_S}(s)$.
