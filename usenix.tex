@@ -359,6 +359,13 @@ There exists a second solution that follows a similar approach, but completely h
 
 As before, an outside user without access to $\pi$ is unable to detect the existence of domain $d$. Additionally, it is not even visible that a certificate has been issued to the domain holder. The tasks for monitors and auditors are the same as before, except that monitors need not verify the connection between $s$ and the domain owner since neither appear in the log. Note that since the signature scheme used is unique, it is not possible for a malicious log to use more than one signature for the same domain name and hide illicit certificates from the eyes of the monitor. 
 
+\subsection{Practical Considerations}
+The use of a VRF for generating a token $t$ corresponding to the private domain $d$ is particularly desirable, as the domain owner $D$ controls hiding internal domains, rather than the CA.
+Since hiding of domain names from CT logs, and thus the public, is opposed to CT's goals, the need to maintain a private key, $sk_\nu$ raises the bar for hiding domain names. Controlling the delivery method of $pk_\nu$, for example by pre-approving it and pre-loading it in browsers' source code, would prevent wide-spread hiding of domain names.
+
+To avoid having to distribute $\pi$ via an out-of-band channel, both $t$ and $\pi$ could be embedded in a Precertificate (using a new X.509 extension) issued by the CA and submitted to the log. The obtained SCT would then be embedded in the final certificate issued by the CA, together with the domain $d$ (necessary for browsers to validate the TLS certificate against the host serving it).
+After validating the certificate's signature itself using $pk_C$, the browser would strip the SCT and $d$ from the certificate in order to validate the log's signature from the SCT, and finally use the extracted $d$ and $t, \pi$ from the certificate to check that $Verify_{pk_\nu}(d,t,\pi)=1$.
+
 \subsection{Performance Estimates}
 \begin{center}
 \begin{figure*}
